@@ -1,0 +1,23 @@
+{
+  "name": "sailthru-zephyr",
+  "version": "1.0.0",
+  "description": "Sailthru Zephyr template parser",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/brandsExclusive/sailthru-zephyr.git"
+  },
+  "author": "Rufus Post",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mynameisrufus/sailthru-zephyr/issues"
+  },
+  "homepage": "https://github.com/mynameisrufus/sailthru-zephyr#readme",
+  "devDependencies": {
+    "jest": "^23.6.0",
+    "prettier": "^1.14.3"
+  }
+}
