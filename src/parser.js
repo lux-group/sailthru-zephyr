@@ -180,10 +180,70 @@ function mergeParenthesis(tokens) {
   return collection;
 }
 
+
+var sax = require("sax"),
+  strict = false, // set to false for html-mode
+  parser = sax.parser(strict, { lowercase: true, trim: false });
+
 const tokenizeZepher = zephyrTemplate => {
-  const chars = zephyrTemplate.split("");
-  const tokens = mergeParenthesis(chars.reduce(tokenzier, []));
-  return parseStatements(parseCharacters(parseParenthesis(tokens)));
+  return new Promise((resolve, reject) => {
+    let collection = []
+    let selfClosing = false
+    let tag = {}
+
+    parser.ontext = function (t) {
+      let result
+      if (tag.name === 'style') {
+        result = [Token("String", t)]
+      } else {
+        const chars = t.split("");
+        const tokens = mergeParenthesis(chars.reduce(tokenzier, []));
+        result =  parseStatements(parseCharacters(parseParenthesis(tokens)));
+      }
+      result.forEach(x => x.parent = tag)
+      collection = collection.concat(result)
+    };
+
+    parser.onopentag = function (t) {
+      tag = t
+      const attr = Object.keys(t.attributes).map(function(key, index) {
+        const chars = t.attributes[key].split("");
+        const tokens = mergeParenthesis(chars.reduce(tokenzier, []));
+        result =  parseStatements(parseCharacters(parseParenthesis(tokens)));
+        return { key, value: result }
+      });
+
+      if (t.isSelfClosing) {
+        collection.push(Token("Tag", { name: t.name, isSelfClosing: true, attr } ))
+        selfClosing = t.name
+      } else {
+        collection.push(Token("Tag", { name: t.name, isSelfClosing: false, attr }))
+        selfClosing = null
+      }
+    }
+
+    parser.onclosetag = function (t) {
+      if (t === selfClosing) {
+        return
+      }
+      collection.push(Token("Closing Tag", t))
+      tag = {}
+    }
+
+    parser.ondoctype = function(t) {
+      collection.push(Token("String", `<!DOCTYPE${t}>`))
+    }
+
+    parser.oncomment = function(t) {
+      collection.push(Token("String", `<!--${t}-->`))
+    }
+
+    parser.onend = function () {
+      resolve(collection)
+    }
+
+    parser.write(zephyrTemplate).close();
+  })
 };
 
 const parse = sailthruTemplate => {

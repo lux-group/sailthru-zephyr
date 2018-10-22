@@ -19,5 +19,12 @@
   "devDependencies": {
     "jest": "^23.6.0",
     "prettier": "^1.14.3"
+  },
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "sax": "^1.2.4"
+  },
+  "bin": {
+    "sailthru-zephyr": "./cli.js"
   }
 }

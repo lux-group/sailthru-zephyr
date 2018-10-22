@@ -5,7 +5,7 @@ const transpile = (abstract) => {
     }
 
     if (token.type === 'Variable') {
-      return `{{{${token.value}}}}`
+      return `{{${token.value}}}`
     }
 
     if (token.type === 'Tag') {
