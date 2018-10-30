@@ -10,3 +10,9 @@ https://getstarted.sailthru.com/developers/zephyr-syntax/zephyr-syntax-overview/
 const { transpileHandlebars } = require('sailthru-zephyr')
 const handlebarsTemplate = transpileHandlebars(zephyrTemplate)
 ```
+
+The following will transpile template and copy over in place:
+
+```
+./cli.js ~/path/to/template.html --format guide
+```
